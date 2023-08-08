@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -31,6 +33,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.FormBody;
@@ -57,28 +60,97 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onResponse(Call call, Response response)
       throws IOException {
-      if (response.isSuccessful()) {
-        final String body = response.body().string();
+      //接口是看内部的code,解析他的code
+      final String body = response.body().string();
+      Gson gson = new Gson();
+      Type jsonType =
+        new TypeToken<BaseResponse<Objects>>() {}.getType();
+        BaseResponse<Objects> Response =
+        gson.fromJson(body, jsonType);
+
+      if (Response.getCode()==200) {
 
         runOnUiThread(new Runnable() {
           @Override
           public void run() {
-
-            Gson gson = new Gson();
-            Type jsonType = new TypeToken<BaseResponse<List<News>>>() {}.getType();
-//            获取响应结果
-            BaseResponse<List<News>> newsListResponse = gson.fromJson(body, jsonType);
+            new  AlertDialog.Builder(LoginActivity.this)
+              .setTitle("注册提示")
+              .setMessage("注册成功" )
+              .setPositiveButton("确定" ,  null )
+              .show();
 
           }
         });
       } else {
-        //失败的处理
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            new AlertDialog.Builder(LoginActivity.this)
+              .setTitle("注册提示")
+              .setMessage(Response.getMsg())
+              .setPositiveButton("确定", null)
+              .show();
+          }
+        });
       }
     }
   };
 
+  private okhttp3.Callback login = new okhttp3.Callback() {
+    @Override
+    public void onFailure(Call call, IOException e) {
+      Log.e(TAG, "Failed to connect server!");
+      e.printStackTrace();
+    }
+
+    @Override
+    public void onResponse(Call call, Response response)
+      throws IOException {
+      //接口是看内部的code,解析他的code
+      final String body = response.body().string();
+      Gson gson = new Gson();
+      Type jsonType =
+        new TypeToken<BaseResponse<Objects>>() {}.getType();
+      BaseResponse<Objects> Response =
+        gson.fromJson(body, jsonType);
+
+      if (Response.getCode()==200) {
+
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            new  AlertDialog.Builder(LoginActivity.this)
+              .setTitle("登录提示")
+              .setMessage("登录成功" )
+              .setPositiveButton("确定" ,  null )
+              .show();
+
+            //登录成功跳转
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+          }
+        });
+      } else {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            new AlertDialog.Builder(LoginActivity.this)
+              .setTitle("登录提示")
+              .setMessage(Response.getMsg())
+              .setPositiveButton("确定", null)
+              .show();
+          }
+        });
+      }
+    }
+  };
+
+
   public void showLoginDialog() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
     builder.setTitle("注册");
 
     LayoutInflater inflater = getLayoutInflater();
@@ -95,14 +167,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String username = usernameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
 
-            // Process the username and password
-            // ...
+            //发注册请求
+            new Thread(() -> {
+
+              FormBody formBody = new FormBody.Builder()
+                .add("username",username)
+                .add("password",password)
+                .build();
+
+              //请求路径
+              Request request = new Request.Builder()
+                .addHeader("appId","37baffe1646a4411a338eb820a131176")
+                .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
+                .url(Constants.SERVER_URL2 + "user/register")
+                .post(formBody).build();
+
+              try {
+                OkHttpClient client = new OkHttpClient();
+                client.newCall(request).enqueue(signup);
+              } catch (NetworkOnMainThreadException ex) {
+//            主线程网络错误
+                ex.printStackTrace();
+              }
+            }).start();
           }
         })
       .setNegativeButton("Cancel", null);
-
     AlertDialog dialog = builder.create();
     dialog.show();
+      }
+    });
   }
 
 
@@ -138,32 +232,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
     cbRememberPwd.setChecked(rememberPassword);
 
-
-    //注册注册按钮
-//    View.OnClickListener onClickListener = v -> new Thread(() -> {
-//
-//      FormBody formBody = new FormBody.Builder()
-//        .add("username","username")
-//        .add("password","password")
-//        .build();
-//
-//      //请求路径
-//      Request request = new Request.Builder()
-//        .addHeader("appId","37baffe1646a4411a338eb820a131176")
-//        .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
-//        .url(Constants.SERVER_URL2 + "user/register")
-//        .post(formBody).build();
-//
-//      try {
-//        OkHttpClient client = new OkHttpClient();
-//        client.newCall(request).enqueue(signup);
-//      } catch (NetworkOnMainThreadException ex) {
-////            主线程网络错误
-//        ex.printStackTrace();
-//      }
-//    }).start();
-//    tvSignUp.setOnClickListener(onClickListener);
-    // 在点击注册按钮的事件处理程序中
 
 
     //创建弹窗
@@ -208,8 +276,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editor.remove(rememberPasswordKey);
         editor.apply();
       }
-      Intent intent = new Intent(this, MainActivity.class);
-      startActivity(intent);
+
+      //发送登录的请求
+      String password = etPwd.getText().toString();
+      String username = etAccount.getText().toString();
+
+      new Thread(() -> {
+
+        FormBody formBody = new FormBody.Builder()
+          .add("username",username)
+          .add("password",password)
+          .build();
+
+        //请求路径
+        Request request = new Request.Builder()
+          .addHeader("appId","37baffe1646a4411a338eb820a131176")
+          .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
+          .url(Constants.SERVER_URL2 + "user/login")
+          .post(formBody).build();
+
+        try {
+          OkHttpClient client = new OkHttpClient();
+          client.newCall(request).enqueue(signup);
+        } catch (NetworkOnMainThreadException ex) {
+//            主线程网络错误
+          ex.printStackTrace();
+        }
+      }).start();
+
+
+
+//      Intent intent = new Intent(this, MainActivity.class);
+//      startActivity(intent);
     }
 
   }
