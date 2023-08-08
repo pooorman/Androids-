@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GGnews</string>
+    <string name="todo">TODO</string>
+    <string name="_2021_07_20">2021-07-20</string>
+    <string name="todo1">TODO</string>
+    <string name="ListViewDemo">ListViewDemo</string>
+    <string name="shared_preferences_file_name">sp_login</string >
+    <string name="login_account_name">login_account_name</string >
+    <string name="login_password">login_password</string >
+    <string name="login_remember_password">login_remember_password</string >
+</resources>
