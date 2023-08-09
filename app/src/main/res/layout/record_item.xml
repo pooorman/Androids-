@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="100px"
+    android:orientation="horizontal">
+    <ImageView
+      android:id="@+id/tvHeadImage"
+      android:layout_width="100px"
+      android:layout_height="100px"
+      android:layout_marginLeft="45px"
+      android:layout_marginRight="45px"
+      />
+
+    <TextView
+      android:id="@+id/tvUsername"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:textSize="16sp"
+      android:text="happy._.mjq"
+      android:textStyle="bold"
+      android:gravity="center"/>
+
+    <Button
+      android:id="@+id/tvFollow"
+      android:layout_marginLeft="400px"
+      android:layout_marginRight="45px"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:text="关注"
+      android:layout_weight="1"
+      />
+  </LinearLayout>
+
+
+  <ImageView
+    android:id="@+id/tvImageUrl"
+    android:layout_width="match_parent"
+    android:layout_height="600px"/>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="100px"
+    android:layout_marginTop="45px"
+    android:orientation="horizontal">
+
+    <ImageView
+      android:id="@+id/btnLike"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="45px"
+      android:src="@drawable/baseline_handshake_24"
+      android:text="Like" />
+
+
+
+    <ImageView
+      android:id="@+id/btnComment"
+      android:src="@drawable/baseline_comment_24"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="45px"
+      android:text="Comment" />
+
+    <ImageView
+      android:id="@+id/btnCollection"
+      android:src="@drawable/baseline_collections_24"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="45px"
+      android:text="Collection" />
+
+  </LinearLayout>
+<!--  点赞数 -->
+  <TextView
+    android:id="@+id/tvLikesCount"
+    android:layout_width="wrap_content"
+    android:layout_height="50px"
+    android:text="50,949次点赞"
+    android:layout_marginLeft="45px"
+    android:textStyle="bold"
+     />
+  <TextView
+    android:id="@+id/tvTitle"
+    android:layout_width="wrap_content"
+    android:layout_height="50px"
+    android:text="可爱的笨蛋小狗"
+    android:layout_marginLeft="45px"
+    android:textSize="14sp" />
+
+  <TextView
+    android:id="@+id/tvCollectCount"
+    android:layout_width="wrap_content"
+    android:layout_height="50px"
+    android:text="共749条评论"
+    android:layout_marginLeft="45px"
+    android:textStyle="bold"
+    />
+
+
+<!--  点箭头展开-->
+<!--  <TextView-->
+<!--    android:id="@+id/tvContent"-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:textSize="14sp" />-->
+</LinearLayout>

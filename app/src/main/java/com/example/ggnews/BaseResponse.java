@@ -8,7 +8,7 @@ public class BaseResponse <T> {
 
     public final static int RESPONSE_SUCCESS = 0;
 
-    @SerializedName("newslist")
+    @SerializedName("data")
     private T data;
 
     public BaseResponse() {

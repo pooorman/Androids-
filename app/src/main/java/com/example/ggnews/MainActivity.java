@@ -27,9 +27,9 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private ListView lvNewsList;
-    private List<News> newsData;
+    private List<Records> newsData;
 
-    private NewsAdapter adapter;
+    private RecordsAdapter adapter;
 
 
     private int page = 1;
@@ -56,12 +56,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Gson gson = new Gson();
-                        Type jsonType =
-                                new TypeToken<BaseResponse<List<News>>>() {}.getType();
-                        BaseResponse<List<News>> newsListResponse =
-                                gson.fromJson(body, jsonType);
-                        for (News news:newsListResponse.getData()) {
-                            adapter.add(news);
+//                        Type jsonType =
+//                                new TypeToken<BaseResponse<List<News>>>() {}.getType();
+//                        BaseResponse<List<News>> newsListResponse =
+//                                gson.fromJson(body, jsonType);
+                      Type jsonType =
+                        new TypeToken<BaseResponse<List<Records>>>() {}.getType();
+                      BaseResponse<List<Records>> newsListResponse =
+                        gson.fromJson(body, jsonType);
+                        for (Records records:newsListResponse.getData()) {
+                            adapter.add(records);
                         }
 
                         adapter.notifyDataSetChanged();
@@ -83,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private void initData() {
         newsData = new ArrayList<>();
-        adapter = new NewsAdapter(MainActivity.this,
-                R.layout.list_item, newsData);
+        adapter = new RecordsAdapter(MainActivity.this,
+                R.layout.record_item, newsData);
         lvNewsList.setAdapter(adapter);
 
         refreshData(1);
@@ -95,15 +99,18 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                NewsRequest requestObj = new NewsRequest();
+                RecordsRequest requestObj = new RecordsRequest();
 
-                requestObj.setCol(mCols[mCurrentColIndex]);
-                requestObj.setNum(Constants.NEWS_NUM);
-                requestObj.setPage(page);
+//                requestObj.setCol(mCols[mCurrentColIndex]);
+                requestObj.setUserId(1);
+                requestObj.setSize(Constants.NEWS_NUM);
+                requestObj.setCurrent(page);
                 String urlParams = requestObj.toString();
 
                 Request request = new Request.Builder()
-                        .url(Constants.GENERAL_NEWS_URL + urlParams)
+                        .url(Constants.SERVER_URL2+"/share"+ urlParams)
+                        .addHeader("appId","37baffe1646a4411a338eb820a131176")
+                        .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
                         .get().build();
                 try {
                     OkHttpClient client = new OkHttpClient();
@@ -118,21 +125,21 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         lvNewsList = findViewById(R.id.lv_news_list);
 
-        lvNewsList.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView,
-                                            View view, int i, long l) {
-
-                        Intent intent = new Intent(MainActivity.this,
-                                DetailActivity.class);
-
-                        News news = adapter.getItem(i);
-                        intent.putExtra(Constants.NEWS_DETAIL_URL_KEY,
-                                news.getContentUrl());
-
-                        startActivity(intent);
-                    }
-                });
+//        lvNewsList.setOnItemClickListener(
+//                new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> adapterView,
+//                                            View view, int i, long l) {
+////                        跳转
+//                        Intent intent = new Intent(MainActivity.this,
+//                                DetailActivity.class);
+//
+//                        News news = adapter.getItem(i);
+//                        intent.putExtra(Constants.NEWS_DETAIL_URL_KEY,
+//                                news.getContentUrl());
+//
+//                        startActivity(intent);
+//                    }
+//                });
     }
 }

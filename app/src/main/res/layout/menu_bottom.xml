@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/bottom1"
+    android:title="积分"
+    android:icon="@drawable/ic_launcher_background"/>
+  <item android:id="@+id/bottom2"
+    android:title="答题"
+    android:icon="@drawable/ic_launcher_background"/>
+  <item android:id="@+id/bottom3"
+    android:title="学习"
+    android:icon="@drawable/ic_launcher_background"/>
+  <item android:id="@+id/bottom4"
+    android:title="电台"
+    android:icon="@drawable/ic_launcher_background"/>
+</menu>

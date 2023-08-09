@@ -12,6 +12,10 @@ public final class Constants {
 
     public static String GENERAL_NEWS_PATH = "tiyu/index";
 
+    public static String appId = "37baffe1646a4411a338eb820a131176";
+
+    public static String appSecret = "37609f4e6965cf9384d88bfd237a20b5aa666";
+
     public static String API_KEY = "79992f1e9518724fd1f80d140646d9ae";
 
     public static String ALL_NEWS_URL = SERVER_URL + ALL_NEWS_PATH;

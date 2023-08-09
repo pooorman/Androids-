@@ -193,8 +193,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
           }
         })
       .setNegativeButton("Cancel", null);
-    AlertDialog dialog = builder.create();
-    dialog.show();
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
       }
     });
   }
@@ -297,7 +298,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         try {
           OkHttpClient client = new OkHttpClient();
-          client.newCall(request).enqueue(signup);
+          client.newCall(request).enqueue(login);
         } catch (NetworkOnMainThreadException ex) {
 //            主线程网络错误
           ex.printStackTrace();
