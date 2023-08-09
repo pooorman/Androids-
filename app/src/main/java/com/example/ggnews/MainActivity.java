@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
 //                        BaseResponse<List<News>> newsListResponse =
 //                                gson.fromJson(body, jsonType);
                       Type jsonType =
-                        new TypeToken<BaseResponse<List<Records>>>() {}.getType();
-                      BaseResponse<List<Records>> newsListResponse =
+                        new TypeToken<NewBaseResponse<List<Records>>>() {}.getType();
+                      NewBaseResponse<List<Records>> newsListResponse =
                         gson.fromJson(body, jsonType);
-                        for (Records records:newsListResponse.getData()) {
+                        for (Records records:newsListResponse.getData().getRecords()) {
                             adapter.add(records);
                         }
 
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 RecordsRequest requestObj = new RecordsRequest();
-
 //                requestObj.setCol(mCols[mCurrentColIndex]);
                 requestObj.setUserId(1);
                 requestObj.setSize(Constants.NEWS_NUM);
@@ -124,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
     }
     private void initView() {
         lvNewsList = findViewById(R.id.lv_news_list);
-
 //        lvNewsList.setOnItemClickListener(
 //                new AdapterView.OnItemClickListener() {
 //                    @Override

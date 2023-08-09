@@ -6,6 +6,7 @@ public class BaseResponse <T> {
     private int code;
     private String msg;
 
+
     public final static int RESPONSE_SUCCESS = 0;
 
     @SerializedName("data")
