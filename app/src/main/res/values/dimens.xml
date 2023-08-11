@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="item_spacing">2px</dimen>
+  <dimen name="item_spacing1">5px</dimen>
+  <dimen name="item_border_size">2px</dimen>
+  <dimen name="item_border_size1">5px</dimen>
+</resources>

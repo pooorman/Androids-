@@ -1,5 +1,6 @@
-package com.example.ggnews;
+package com.example.ggnews.javabean;
 
+import java.io.Serializable;
 import java.util.List;
 
 //public class Records {
@@ -146,7 +147,7 @@ import java.util.List;
 //}
 
 
-public class Records {
+public class Records implements Serializable {
   private String id;
   private String pUserId;
   private String imageCode;
@@ -162,6 +163,10 @@ public class Records {
   private boolean hasCollect;
   private boolean hasFocus;
   private String username;
+    // 其他成员变量
+
+    // 其他方法
+
 
   // Add getter and setter methods for the above fields
   // ...
@@ -215,7 +220,19 @@ public class Records {
   }
 
   public String getImageUrlList() {
-    return imageUrlList.get(0);
+    try {
+      return imageUrlList.get(0);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public List<String> getImageAllUrlList() {
+    try {
+      return imageUrlList;
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public void setImageUrlList(List<String> imageUrlList) {

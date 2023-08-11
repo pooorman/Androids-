@@ -1,46 +1,87 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_marginBottom="200px"
   android:orientation="vertical">
 
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="100px"
+    android:layout_height="150px"
+    android:layout_marginBottom="20px"
     android:orientation="horizontal">
-    <ImageView
+
+    <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/tvHeadImage"
-      android:layout_width="100px"
-      android:layout_height="100px"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_gravity="center"
       android:layout_marginLeft="45px"
-      android:layout_marginRight="45px"
-      />
-
-    <TextView
-      android:id="@+id/tvUsername"
+      android:layout_marginRight="45px" />
+    <LinearLayout
       android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:textSize="16sp"
-      android:text="happy._.mjq"
-      android:textStyle="bold"
-      android:gravity="center"/>
+      android:orientation="vertical"
+      android:layout_height="150px">
+      <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="16sp"
+        android:text="happy._.mjq"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:gravity="center"/>
 
+      <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:textSize="13sp"
+        android:text="happy._.mjq"
+        android:gravity="center"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
     <Button
       android:id="@+id/tvFollow"
-      android:layout_marginLeft="400px"
       android:layout_marginRight="45px"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
+      android:layout_width="200px"
+      android:layout_alignParentRight="true"
+      android:layout_height="150px"
       android:text="关注"
-      android:layout_weight="1"
+      android:textSize="10sp"
       />
-  </LinearLayout>
+  </RelativeLayout>
+  <TextView
+    android:id="@+id/tvRealTitle"
+    android:layout_width="wrap_content"
+    android:layout_height="50px"
+    android:text="可爱的笨蛋小狗"
+    android:textColor="@color/black"
+    android:layout_marginLeft="45px"
+    android:layout_marginBottom="50px"
+    android:textSize="14sp" />
+
+<!--  <ImageView-->
+<!--    android:id="@+id/tvImageUrl"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="800px"/>-->
 
 
-  <ImageView
-    android:id="@+id/tvImageUrl"
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/re_image_list"
     android:layout_width="match_parent"
-    android:layout_height="600px"/>
-
+    android:layout_height="1050px"
+    android:layout_margin="8dp"
+    android:divider="@android:color/white"
+    android:dividerHeight="8dp"
+    android:scrollbars="none" />
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -68,29 +109,56 @@
 
     <ImageView
       android:id="@+id/btnCollection"
-      android:src="@drawable/baseline_collections_24"
+      android:src="@drawable/baseline_gray_star_24"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginLeft="45px"
       android:text="Collection" />
 
   </LinearLayout>
-<!--  点赞数 -->
+
   <TextView
     android:id="@+id/tvLikesCount"
     android:layout_width="wrap_content"
     android:layout_height="50px"
-    android:text="50,949次点赞"
+    android:text="50,949次赞"
+    android:textColor="@color/black"
     android:layout_marginLeft="45px"
     android:textStyle="bold"
-     />
-  <TextView
-    android:id="@+id/tvTitle"
+    />
+<!--  点赞数 -->
+  <LinearLayout
     android:layout_width="wrap_content"
-    android:layout_height="50px"
-    android:text="可爱的笨蛋小狗"
-    android:layout_marginLeft="45px"
-    android:textSize="14sp" />
+    android:orientation="horizontal"
+    android:layout_height="50px">
+    <TextView
+      android:id="@+id/tvSecondTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="50px"
+      android:text="可爱的笨蛋小狗"
+      android:textColor="@color/black"
+      android:gravity="top"
+      android:layout_marginLeft="45px"
+      android:textStyle="bold"
+      android:textSize="12sp" />
+    <TextView
+      android:id="@+id/tvTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="50px"
+      android:text="可爱的笨蛋小狗"
+      android:textColor="@color/black"
+      android:layout_marginLeft="45px"
+      android:textSize="14sp" />
+
+  </LinearLayout>
+
+
+
+
+
+
+
+
 
   <TextView
     android:id="@+id/tvCollectCount"
@@ -98,7 +166,6 @@
     android:layout_height="50px"
     android:text="共749条评论"
     android:layout_marginLeft="45px"
-    android:textStyle="bold"
     />
 
 

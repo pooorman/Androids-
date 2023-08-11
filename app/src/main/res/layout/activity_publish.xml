@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="200px"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:orientation="vertical">
+
+
+  <LinearLayout
+    android:layout_marginTop="45px"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:layout_marginLeft="50dp"
+      android:layout_width="wrap_content"
+      android:text="新帖子"
+      android:textSize="40sp"
+      android:textStyle="bold"
+      android:textColor="@color/black"
+      android:layout_height="wrap_content"/>
+
+    <Button
+      android:id="@+id/create_publish"
+      android:layout_width="wrap_content"
+      android:layout_marginLeft="350px"
+      android:text="发布"
+      android:layout_height="match_parent"/>
+
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_marginTop="45px"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/create_showEdit"
+      android:layout_marginLeft="50dp"
+      android:layout_width="250px"
+      android:layout_height="250px"/>
+
+    <EditText
+      android:id="@+id/create_head"
+      android:layout_width="wrap_content"
+      android:layout_marginLeft="50px"
+      android:text="添加说明..."
+      android:layout_height="match_parent"/>
+
+
+
+  </LinearLayout>
+
+  <EditText
+    android:id="@+id/create_content"
+    android:layout_width="match_parent"
+    android:text="请输入正文..."
+    android:layout_marginLeft="125px"
+    android:layout_height="300px"/>
+
+  <TextView
+    android:id="@+id/create_save"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textSize="30sp"
+    android:textColor="@color/black"
+    android:layout_marginLeft="100px"
+    android:textStyle="bold"
+    android:text="保存为草稿"/>
+
+</LinearLayout>

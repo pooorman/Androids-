@@ -1,4 +1,4 @@
-package com.example.ggnews;
+package com.example.ggnews.javabean;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

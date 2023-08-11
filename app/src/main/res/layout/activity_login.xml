@@ -5,7 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
-  tools:context=".LoginActivity">
+  tools:context=".activity.LoginActivity">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -17,7 +17,7 @@
       android:layout_width="108dp"
       android:layout_height="108dp"
       android:layout_centerInParent="true"
-      android:src="@mipmap/ic_logo" />
+      android:src="@mipmap/img" />
   </RelativeLayout>
 
   <RelativeLayout
@@ -41,8 +41,8 @@
       android:layout_gravity="center"
       android:layout_marginStart="48dp"
       android:layout_marginEnd="48dp"
-      android:layout_marginBottom="1dp"
-      android:hint="Email/Account"
+      android:layout_marginBottom="-1dp"
+      android:hint="邮箱/账户"
       android:inputType="text"
       android:maxLines="1" />
   </RelativeLayout>
@@ -67,7 +67,7 @@
       android:layout_marginStart="48dp"
       android:layout_marginEnd="48dp"
       android:layout_marginBottom="-2dp"
-      android:hint="Password"
+      android:hint="密码"
       android:inputType="textPassword"
       android:maxLines="1" />
 
@@ -89,7 +89,7 @@
     android:layout_height="wrap_content">
     <Button
       android:id="@+id/bt_login"
-      android:text="Login"
+      android:text="登录"
       android:textColor="@android:color/white"
       android:layout_marginTop="32dp"
       android:layout_marginLeft="8dp"
@@ -120,7 +120,7 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="8dp"
       android:layout_marginBottom="4dp"
-      android:text="Remember Password" />
+      android:text="记住密码" />
 
   </RelativeLayout>
 

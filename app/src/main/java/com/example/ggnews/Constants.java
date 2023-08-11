@@ -4,7 +4,8 @@ public final class Constants {
     private Constants() {
     }
 
-    public static final int NEWS_NUM = 10;
+    public static final int NEWS_NUM = 20;
+    public static final int ADD_NUM = 10;
     public static String SERVER_URL = "http://api.tianapi.com/";
     public static String ALL_NEWS_PATH = "tiyu/index";
 

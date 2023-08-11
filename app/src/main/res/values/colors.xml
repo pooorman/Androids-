@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorTransparet">#FFFF01</color>
     <color name="colorTransparent">#FFFF01</color>
+  <color name="item_border_color">#FFFFFF</color>
 </resources>

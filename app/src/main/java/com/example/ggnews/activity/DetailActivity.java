@@ -1,4 +1,4 @@
-package com.example.ggnews;
+package com.example.ggnews.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.ggnews.Constants;
+import com.example.ggnews.R;
 
 public class DetailActivity extends AppCompatActivity {
     WebView webView;

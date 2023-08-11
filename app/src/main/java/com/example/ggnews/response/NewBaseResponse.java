@@ -1,5 +1,7 @@
-package com.example.ggnews;
+package com.example.ggnews.response;
 
+
+import com.example.ggnews.javabean.Records;
 
 import java.util.List;
 

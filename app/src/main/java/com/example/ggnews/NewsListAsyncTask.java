@@ -3,6 +3,10 @@ package com.example.ggnews;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.ggnews.adapter.NewsAdapter;
+import com.example.ggnews.javabean.News;
+import com.example.ggnews.request.NewsRequest;
+import com.example.ggnews.response.BaseResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -1,4 +1,4 @@
-package com.example.ggnews;
+package com.example.ggnews.adapter;
 
 
 import android.content.Context;
@@ -9,6 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.example.ggnews.javabean.News;
+import com.example.ggnews.R;
+
 import java.util.List;
 public class NewsAdapter  extends ArrayAdapter<News> {
 

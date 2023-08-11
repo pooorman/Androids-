@@ -1,4 +1,4 @@
-package com.example.ggnews;
+package com.example.ggnews.activity;
 
 
 
@@ -13,8 +13,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -27,18 +25,26 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.ggnews.response.BaseResponse;
+import com.example.ggnews.Constants;
+import com.example.ggnews.response.LoginResponse;
+import com.example.ggnews.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
   private EditText etPwd;
   private EditText etAccount;
   private CheckBox cbRememberPwd;
-
+  private LoginResponse loginData;
   private okhttp3.Callback signup = new okhttp3.Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
@@ -110,23 +116,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
       final String body = response.body().string();
       Gson gson = new Gson();
       Type jsonType =
-        new TypeToken<BaseResponse<Objects>>() {}.getType();
-      BaseResponse<Objects> Response =
+        new TypeToken<BaseResponse<LoginResponse>>() {}.getType();
+      BaseResponse<LoginResponse> Response =
         gson.fromJson(body, jsonType);
 
       if (Response.getCode()==200) {
-
+        LoginResponse loginResponse = Response.getData();
         runOnUiThread(new Runnable() {
           @Override
           public void run() {
             new  AlertDialog.Builder(LoginActivity.this)
               .setTitle("登录提示")
               .setMessage("登录成功" )
-              .setPositiveButton("确定" ,  null )
               .show();
 
             //登录成功跳转
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+            //存储数据
+            intent.putExtra("id", loginResponse.getId());
+            intent.putExtra("LoginData", loginResponse);
+
             startActivity(intent);
           }
         });
@@ -160,7 +170,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText usernameEditText = dialogView.findViewById(R.id.iv_username);
     EditText passwordEditText = dialogView.findViewById(R.id.iv_password);
 
-    builder.setPositiveButton("Sign in",
+    builder.setPositiveButton("开始注册",
         new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int id) {
@@ -170,17 +180,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             //发注册请求
             new Thread(() -> {
 
-              FormBody formBody = new FormBody.Builder()
-                .add("username",username)
-                .add("password",password)
-                .build();
+              MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+              JSONObject jsonObject = new JSONObject();
+              try {
+                jsonObject.put("password", password);
+                jsonObject.put("username", username);
+              } catch (JSONException e) {
+                e.printStackTrace();
+              }
+              RequestBody requestBody = RequestBody.create(JSON, jsonObject.toString());
 
-              //请求路径
+              // 构建请求
               Request request = new Request.Builder()
-                .addHeader("appId","37baffe1646a4411a338eb820a131176")
-                .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
+                .addHeader("Accept", "application/json, text/plain, */*")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("appId", "37baffe1646a4411a338eb820a131176")
+                .addHeader("appSecret", "37609f4e6965cf9384d88bfd237a20b5aa666")
                 .url(Constants.SERVER_URL2 + "user/register")
-                .post(formBody).build();
+                .post(requestBody)
+                .build();
 
               try {
                 OkHttpClient client = new OkHttpClient();
@@ -192,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }).start();
           }
         })
-      .setNegativeButton("Cancel", null);
+      .setNegativeButton("取消", null);
             AlertDialog dialog = builder.create();
             dialog.show();
 
@@ -307,8 +325,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
-//      Intent intent = new Intent(this, MainActivity.class);
-//      startActivity(intent);
     }
 
   }

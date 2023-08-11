@@ -1,4 +1,6 @@
-package com.example.ggnews;
+package com.example.ggnews.request;
+
+import com.example.ggnews.Constants;
 
 public class NewsRequest {
     public int getNum() {

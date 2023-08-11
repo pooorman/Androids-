@@ -1,9 +1,9 @@
-package com.example.ggnews;
+package com.example.ggnews.request;
 
 public class RecordsRequest {
   private int current;
   private int size;
-  private int userId;
+  private long userId;
 
   public int getCurrent() {
     return current;
@@ -21,23 +21,25 @@ public class RecordsRequest {
     this.size = size;
   }
 
-  public int getUserId() {
+  public long getUserId() {
     return userId;
   }
 
-  public void setUserId(int userId) {
+  public void setUserId(long userId) {
     this.userId = userId;
   }
 
   @Override
   public String toString() {
     String retValue;
-
-    retValue = "?" + "&current=" + current
-      + "&size=" + size + "&userId=" + userId;
-//    if (current != -1) {
-//      retValue += "&page=" + page;
-//    }
+    if(userId!=0){
+      retValue = "?" + "&current=" + current
+        + "&size=" + size + "&userId=" + userId;
+    }
+    else {
+      retValue = "?" + "&current=" + current
+        + "&size=" + size;
+    }
     return retValue;
   }
 }

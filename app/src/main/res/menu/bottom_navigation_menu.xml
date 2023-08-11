@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/bottom1"
+    android:title="发现"
+    android:icon="@drawable/gray_search_24"/>
+  <item android:id="@+id/bottom4"
+    android:title="关注"
+    android:icon="@drawable/baseline_bookmark_24"/>
+  <item android:id="@+id/bottom2"
+    android:title="创作"
+    android:icon="@drawable/gray_add_box_24"/>
+  <item android:id="@+id/bottom3"
+    android:title="主页"
+    android:icon="@drawable/grayaccount_circle_24"/>
+
+
+</menu>
