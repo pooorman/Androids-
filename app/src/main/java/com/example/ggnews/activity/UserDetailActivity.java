@@ -46,33 +46,20 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class UserDetailActivity extends AppCompatActivity {
-  private ListView lvNewsList;
-  private List<Records> newsData;
   private TextView introduce;
-  private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+  private SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private TextView sex;
   private TextView username;
 
   private TextView number;
   private TextView create;
-  private RecyclerView lvLikeList;
-  private ImageItemAdapter adapter;
-  private EditText passwordEdit;
-  private LoginResponse result;
-  private Button follow;
-  private int page = 1;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_user_detail);
-
-    initView();
     sendUserDetail();
-  }
-  public void clearAll() {
-    newsData.clear();
-    adapter.notifyDataSetChanged();
   }
 
   private okhttp3.Callback signup = new okhttp3.Callback() {
@@ -113,45 +100,9 @@ public class UserDetailActivity extends AppCompatActivity {
       }
     }
   };
-  public void addAll(List<Records> data) {
-    clearAll();
-    newsData.addAll(data);
-    adapter.notifyDataSetChanged();
-  }
 
-  private okhttp3.Callback callback = new okhttp3.Callback() {
-    @Override
-    public void onFailure(Call call, IOException e) {
-      Log.e(TAG, "Failed to connect server!");
-      e.printStackTrace();
-    }
 
-    @Override
-    public void onResponse(Call call, Response response)
-      throws IOException {
-      final String body = response.body().string();
-      Gson gson = new Gson();
-      Type jsonType =
-        new TypeToken<LikeListResponse>() {}.getType();
-      LikeListResponse newsListResponse =
-        gson.fromJson(body, jsonType);
-      if (newsListResponse.getCode()==200) {
-        runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            //存入数据
-            if (newsListResponse.getData() != null) {
-              List<Records> records = newsListResponse.getData().getRecords();
-              if (records != null) {
-                addAll(records);
-              }
-            }
-          }
-        });
-      } else {
-      }
-    }
-  };
+
 
   private okhttp3.Callback login = new okhttp3.Callback() {
     @Override
@@ -259,7 +210,7 @@ public class UserDetailActivity extends AppCompatActivity {
 //    number.setText("上次修改："+sdf.format(new Date(Long.parseLong(loginData.getLastUpdateTime()))));
 
     create = findViewById(R.id.de_create);
-    create.setText("账号创建时间："+sdf.format(new Date(Long.parseLong(loginData.getCreateTime()))));
+    create.setText("账号创建时间："+sdf1.format(new Date(Long.parseLong(loginData.getCreateTime()))));
 
     sex=findViewById(R.id.de_sex);
     sex.setText("性别："+(loginData.getSex()==null?"暂未填写":(loginData.getSex()=="0"?"男":"女")));
@@ -271,7 +222,6 @@ public class UserDetailActivity extends AppCompatActivity {
 
 
 
-    newsData = new ArrayList<>();
     refreshData(1);
   }
 
@@ -279,9 +229,6 @@ public class UserDetailActivity extends AppCompatActivity {
 
   private String CalTimeFormat(Long timestamp){
     long currentTimestamp = System.currentTimeMillis();
-
-    // 获取当天0点的时间戳
-//    long todayTimestamp = currentTimestamp - (currentTimestamp % (24 * 60 * 60 * 1000));
 
     long todayTimestamp = currentTimestamp;
     // 计算时间差（单位：毫秒）
@@ -306,41 +253,14 @@ public class UserDetailActivity extends AppCompatActivity {
       return (days + "天前 ");
     }
   }
-  public void sendRequest(String path) {
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        String userId;
-        RecordsRequest requestObj = new RecordsRequest();
-        Intent intent = getIntent();
-        requestObj.setUserId(Long.parseLong(intent.getStringExtra("pUserId")));
-        requestObj.setSize(Constants.NEWS_NUM);
-        requestObj.setCurrent(page);
-        String urlParams = requestObj.toString();
-        Request request = new Request.Builder()
-          .url(Constants.SERVER_URL2 + path + urlParams)
-          .addHeader("appId", "37baffe1646a4411a338eb820a131176")
-          .addHeader("appSecret", "37609f4e6965cf9384d88bfd237a20b5aa666")
-          .get().build();
-        try {
-          OkHttpClient client = new OkHttpClient();
-          client.newCall(request).enqueue(callback);
-        } catch (NetworkOnMainThreadException ex) {
-          ex.printStackTrace();
-        }
-      }
-    }).start();
-  }
+
 
 
   private void refreshData(final int page) {
     //图片集合还有主页信息
-    sendRequest("like");
-  }
-
-  private void initView() {
-
 
   }
+
+
 
 }

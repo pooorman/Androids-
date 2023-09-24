@@ -2,6 +2,8 @@ package com.example.ggnews.adapter;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.ggnews.adapter.RecordsAdapter.CalTimeFormat;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Handler;
@@ -38,7 +40,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,6 +59,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
   private int page = 1;
   private String userId;
   private EditText editText;
+  private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   public String getUserName() {
     return userName;
@@ -98,74 +105,132 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
     this.editText = activityLayout;
   }
 
-  public void loadMoreData() {
-    //加载新的数据
+
+
+//  public void loadMoreData() {
+//    //加载新的数据
+//    new Thread(new Runnable() {
+//      @Override
+//      public void run() {
+//        // 发送网络请求获取新数据
+//        // ...
+//
+//        new Thread(new Runnable() {
+//          @Override
+//          public void run() {
+//            RecordsRequest requestObj = new RecordsRequest();
+//            requestObj.setUserId(Long.parseLong(userId));
+//            requestObj.setSize(Constants.ADD_NUM);
+//            requestObj.setCurrent(++page);
+//            String urlParams = requestObj.toString();
+//
+//            Request request = new Request.Builder()
+//              .url(Constants.SERVER_URL2+"comment/first"+ urlParams)
+//              .addHeader("appId","37baffe1646a4411a338eb820a131176")
+//              .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
+//              .get().build();
+//            try {
+//              OkHttpClient client = new OkHttpClient();
+//              client.newCall(request).enqueue(new okhttp3.Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                  Log.e(TAG, "Failed to connect server!");
+//                  e.printStackTrace();
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response)
+//                  throws IOException {
+//                  if (response.isSuccessful()) {
+//                    final String body = response.body().string();
+//
+//                    Gson gson = new Gson();
+//                    Type jsonType =
+//                      new TypeToken<BaseResponse<CommentResponse>>() {}.getType();
+//                    NewBaseResponse<List<Records>> newsListResponse =
+//                      gson.fromJson(body, jsonType);
+//                    // 通知适配器数据已更新
+//                    mHandler.post(new Runnable() {
+//                      @Override
+//                      public void run() {
+//                        notifyDataSetChanged();
+//                      }
+//                    });
+//                  } else {
+//                  }
+//                }
+//              });
+//            } catch (NetworkOnMainThreadException ex) {
+//
+//              ex.printStackTrace();
+//            }
+//          }
+//        }).start();
+//
+//        // 解析返回的数据
+//
+//        // 将新数据添加到现有数据列表的末尾
+//
+//      }
+//    }).start();
+//  }
+
+  public void updateHeadImage(ImageView headImage,String detailName){
     new Thread(new Runnable() {
       @Override
       public void run() {
-        // 发送网络请求获取新数据
-        // ...
+        //请求路径
+        Request request = new Request.Builder()
+          .addHeader("appId", "37baffe1646a4411a338eb820a131176")
+          .addHeader("appSecret", "37609f4e6965cf9384d88bfd237a20b5aa666")
+          .url(Constants.SERVER_URL2 + "user/getUserByName?username=" + detailName)
+          .get().build();
 
-        new Thread(new Runnable() {
-          @Override
-          public void run() {
-            RecordsRequest requestObj = new RecordsRequest();
-            requestObj.setUserId(Long.parseLong(userId));
-            requestObj.setSize(Constants.ADD_NUM);
-            requestObj.setCurrent(++page);
-            String urlParams = requestObj.toString();
-
-            Request request = new Request.Builder()
-              .url(Constants.SERVER_URL2+"comment/first"+ urlParams)
-              .addHeader("appId","37baffe1646a4411a338eb820a131176")
-              .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
-              .get().build();
-            try {
-              OkHttpClient client = new OkHttpClient();
-              client.newCall(request).enqueue(new okhttp3.Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                  Log.e(TAG, "Failed to connect server!");
-                  e.printStackTrace();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response)
-                  throws IOException {
-                  if (response.isSuccessful()) {
-                    final String body = response.body().string();
-
-                    Gson gson = new Gson();
-                    Type jsonType =
-                      new TypeToken<BaseResponse<CommentResponse>>() {}.getType();
-                    NewBaseResponse<List<Records>> newsListResponse =
-                      gson.fromJson(body, jsonType);
-                    // 通知适配器数据已更新
-                    mHandler.post(new Runnable() {
-                      @Override
-                      public void run() {
-                        notifyDataSetChanged();
-                      }
-                    });
-                  } else {
-                  }
-                }
-              });
-            } catch (NetworkOnMainThreadException ex) {
-
-              ex.printStackTrace();
+        try {
+          OkHttpClient client = new OkHttpClient();
+          client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+              Log.e(TAG, "Failed to connect server!");
+              e.printStackTrace();
             }
-          }
-        }).start();
 
-        // 解析返回的数据
+            @Override
+            public void onResponse(Call call, Response response)
+              throws IOException {
+              //接口是看内部的code,解析他的code
+              final String body = response.body().string();
+              Gson gson = new Gson();
+              Type jsonType =
+                new TypeToken<BaseResponse<LoginResponse>>() {}.getType();
+              BaseResponse<LoginResponse> Response =
+                gson.fromJson(body, jsonType);
 
-        // 将新数据添加到现有数据列表的末尾
+              if (Response.getCode()==200) {
+                String avatar1 = Response.getData().getAvatar();
+                String avatar = avatar1==null?"https://guet-lab.oss-cn-hangzhou.aliyuncs.com/api/2023/08/30/ee2927bf-6b67-4040-957c-b26c5a5343ab.jpg":avatar1;
+                mHandler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                    Glide.with(mContext).load(avatar)
+                      .into(headImage);
+                  }
+                });
 
+              } else {
+
+
+              }
+            }
+          });
+        } catch (NetworkOnMainThreadException ex) {
+//            主线程网络错误
+          ex.printStackTrace();
+        }
       }
     }).start();
-  }
 
+  }
 
   private class EndlessScrollListener implements AbsListView.OnScrollListener {
     private int visibleThreshold = 5;
@@ -191,7 +256,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         // End has been reached, load more data
         if (totalItemCount < mNewsData.size()) {
           // End has been reached, load more data
-          loadMoreData();
+//          loadMoreData();
           loading = true;
         }
       }
@@ -220,7 +285,6 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
       vh = new CommentAdapter.ViewHolder();
       vh.coComment = view.findViewById(R.id.co_comment);
       vh.coTime = view.findViewById(R.id.time);
-      vh.coShowSecond = view.findViewById(R.id.co_showSecond);
       vh.coUsername = view.findViewById(R.id.co_username);
       vh.coBtn = view.findViewById(R.id.co_btn);
       vh.coHeadImage = view.findViewById(R.id.coHeadImage);
@@ -232,9 +296,18 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
    vh.coUsername.setText(item.getUserName());
    vh.coComment.setText(item.getContent());
-   vh.coTime.setText(item.getCreateTime());
-    Glide.with(mContext).load("https://guet-lab.oss-cn-hangzhou.aliyuncs.com/api/2023/08/30/ee2927bf-6b67-4040-957c-b26c5a5343ab.jpg")
-      .into(vh.coHeadImage);
+    long timestamp=1;
+    try {
+      Date date = formatter.parse(item.getCreateTime());
+      timestamp = date.getTime();
+
+      System.out.println("Timestamp: " + timestamp);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    vh.coTime.setText(CalTimeFormat(timestamp));
+
+    updateHeadImage(vh.coHeadImage,item.getUserName());
    vh.coBtn.setOnClickListener(new View.OnClickListener() {
      //回复按钮
      @Override
@@ -265,26 +338,20 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
      }
    });
+        mHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            lvNewsList = view.findViewById(R.id.co_secondList);
+            mNewsData = new ArrayList<>();
+            SecondCommentAdapter commentAdapter = new SecondCommentAdapter(mContext,
+              R.layout.comment_item, mNewsData);
+            lvNewsList.setAdapter(commentAdapter);
+            sendSecondCommentRequest(item,commentAdapter);
+          }
+        });
 
 
 
-     //移除展开全部回复
-
-
-     vh.coShowSecond.setVisibility(View.VISIBLE);
-     vh.coShowSecond.setOnClickListener(new View.OnClickListener() {
-       //展示全部回复
-       @Override
-       public void onClick(View v) {
-         //看情况来绑定
-         lvNewsList = view.findViewById(R.id.co_secondList);
-         mNewsData = new ArrayList<>();
-         SecondCommentAdapter commentAdapter = new SecondCommentAdapter(mContext,
-           R.layout.comment_item, mNewsData);
-         lvNewsList.setAdapter(commentAdapter);
-         sendSecondCommentRequest(item,commentAdapter);
-       }
-     });
 
 
 
@@ -335,10 +402,13 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
                 mHandler.post(new Runnable() {
                   @Override
                   public void run() {
-                    for (Comment comment:newsListResponse.getData().getRecords()) {
-                      adapter.add(comment);
+                    if(newsListResponse.getData()!=null){
+                      for (Comment comment:newsListResponse.getData().getRecords()) {
+                        adapter.add(comment);
+                      }
+                      adapter.notifyDataSetChanged();
                     }
-                   adapter.notifyDataSetChanged();
+
                   }
                 });
 
@@ -407,6 +477,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
               if (Response.getCode()==200) {
                 editText.setHint("留下你精彩的评论吧！");
                 editText.setText(null);
+
                 mHandler.post(new Runnable() {
                   @Override
                   public void run() {

@@ -63,9 +63,9 @@ public class ImageItemAdapter extends RecyclerView.Adapter<ImageItemAdapter.View
           Intent intent = new Intent(mContext, ImageDetailActivity.class);
           //Intent存登录内容
           intent.putExtra("record",item);
+//          item.setUsername("");
           intent.putExtra("loginData1",loginData);
           mContext.startActivity(intent);
-
         }
       });
     }

@@ -3,12 +3,14 @@ package com.example.ggnews.activity;
 import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +21,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.ggnews.adapter.ImageItemAdapter;
+import com.example.ggnews.adapter.RecordsAdapter;
 import com.example.ggnews.response.BaseResponse;
 import com.example.ggnews.javabean.Comment;
 import com.example.ggnews.Constants;
@@ -27,7 +31,7 @@ import com.example.ggnews.response.LoginResponse;
 import com.example.ggnews.R;
 import com.example.ggnews.javabean.Records;
 import com.example.ggnews.request.RecordsRequest;
-import com.example.ggnews.adapter.SimpleCommentAdapter;
+//import com.example.ggnews.adapter.SimpleCommentAdapter;
 import com.example.ggnews.adapter.ImageItemReAdapter;
 import com.example.ggnews.response.CommentResponse;
 import com.google.gson.Gson;
@@ -53,7 +57,7 @@ public class ImageDetailActivity extends AppCompatActivity {
   private ImageView like;
   private ImageView coll;
   private ImageItemReAdapter adapter;
-  private SimpleCommentAdapter simpleCommentAdapter;
+//  private SimpleCommentAdapter simpleCommentAdapter;
   private ImageView comment;
   private RecyclerView newImageData;
   private RecyclerView newCommentData;
@@ -100,8 +104,8 @@ public class ImageDetailActivity extends AppCompatActivity {
               @Override
               public void run() {
                 commentList = newsListResponse.getData().getRecords();
-                simpleCommentAdapter = new SimpleCommentAdapter(ImageDetailActivity.this,R.id.id_comment_list,commentList);
-                newCommentData.setAdapter(simpleCommentAdapter);
+//                simpleCommentAdapter = new SimpleCommentAdapter(ImageDetailActivity.this,R.id.id_comment_list,commentList);
+//                newCommentData.setAdapter(simpleCommentAdapter);
 
               }
             });
@@ -190,6 +194,8 @@ public class ImageDetailActivity extends AppCompatActivity {
                 //更新likeId
                 records.setLikeId(newsListResponse.getData().getLikeId());
                 records.setCollectId(newsListResponse.getData().getCollectId());
+
+
               } else {
               }
             }
@@ -506,12 +512,19 @@ public class ImageDetailActivity extends AppCompatActivity {
     //获取头像
     getHeadImage(records.getUsername());
     userName.setText(records.getUsername());
-    time.setText(records.getCreateTime());
+    time.setText(RecordsAdapter.CalTimeFormat(Long.parseLong(records.getCreateTime())));
+
     title.setText(records.getTitle());
-    Glide.with(this).load(loginResponse.getAvatar()==null?"https://guet-lab.oss-cn-hangzhou.aliyuncs.com/api/2023/08/30/ee2927bf-6b67-4040-957c-b26c5a5343ab.jpg":loginResponse.getAvatar())
-      .into(bottomImage);
 
-
+    headImage.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(ImageDetailActivity.this, UserDetailActivity.class);
+        intent.putExtra("name",userName.getText());
+        intent.putExtra("pUserId",loginResponse.getId());
+        startActivity(intent);
+      }
+    });
 
 //    按钮们
     if (records.isHasLike()){
@@ -556,44 +569,58 @@ public class ImageDetailActivity extends AppCompatActivity {
 
 
 //    初始化recycle数据
+
     List<String> imageAllUrlList = records.getImageAllUrlList();
     recordList = imageAllUrlList;
-    adapter = new ImageItemReAdapter(this, R.layout.image_item, recordList);
-    newImageData.setAdapter(adapter);
 
+
+    int spacing = this.getResources().getDimensionPixelSize(R.dimen.item_spacing);
+    int borderSize = this.getResources().getDimensionPixelSize(R.dimen.item_border_size);
+    int borderColor = ContextCompat.getColor(this, R.color.item_border_color);
+    int num = recordList.size();
+    int columnNum = calGridLayout(num);
+    int rowNum = (int)(Math.ceil(num/columnNum));
     //更新一级评论
-    freshData();
+    if(num!=0){
+      int height = 1050 / rowNum;
+      GridLayoutManager layoutManager = new GridLayoutManager(this, columnNum);
+      layoutManager.setAutoMeasureEnabled(true); // 添加这行代码
+      newImageData.setLayoutManager(layoutManager);
+      newImageData.addItemDecoration(new GridSpacingItemDecoration(spacing,borderSize, borderColor));
 
+      ImageItemReAdapter adapter = new ImageItemReAdapter(this, R.layout.image_item, recordList);
+      adapter.setHeight(height);
+      ViewGroup.LayoutParams params = newImageData.getLayoutParams();
+      params.height = height; // 设置高度为500像素
+      newImageData.setLayoutParams(params);
+      newImageData.setAdapter(adapter);
+    }
 
-
-
-  }
-
-
-
-
-  private void freshData() {
-    new Thread(new Runnable() {
+    comment.setOnClickListener(new View.OnClickListener() {
       @Override
-      public void run() {
-        RecordsRequest requestObj = new RecordsRequest();
-        requestObj.setSize(Constants.NEWS_NUM);
-        String urlParams = requestObj.toString();
-        Request request = new Request.Builder()
-          .url(Constants.SERVER_URL2+"comment/first"+ urlParams+"&shareId="+records.getId())
-          .addHeader("appId","37baffe1646a4411a338eb820a131176")
-          .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
-          .get().build();
-        try {
-          OkHttpClient client = new OkHttpClient();
-          client.newCall(request).enqueue(callback);
-        } catch (NetworkOnMainThreadException ex) {
+      public void onClick(View v) {
+        Intent intent = new Intent(ImageDetailActivity.this, CommentActivity.class);
+        //存入shareId
+        intent.putExtra("shareId",records.getId());
+        intent.putExtra("loginData1",loginResponse);
+        startActivity(intent);
 
-          ex.printStackTrace();
-        }
       }
-    }).start();
+    });
+
+
   }
+
+
+
+
+  private int calGridLayout(int sum){
+    if(sum==1)return 1;
+    else if (sum==2 || sum==4) return 2;
+    else return 3;
+
+  }
+
 
 
 
@@ -603,12 +630,11 @@ public class ImageDetailActivity extends AppCompatActivity {
     time = findViewById(R.id.idTime);
     title = findViewById(R.id.idTitle);
     newImageData = findViewById(R.id.id_image_list);
-    newCommentData = findViewById(R.id.id_comment_list);
     like = findViewById(R.id.btnLike1);
     coll = findViewById(R.id.btnCollection1);
     comment = findViewById(R.id.btnComment1);
-    bottomImage = findViewById(R.id.idBottomImage);
-    publish = findViewById(R.id.idEditPublish);
+
+
 
 
     //ImageItem的距离注意!
@@ -616,20 +642,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
     newImageData.setLayoutManager(layoutManager);
 
-    // Create and set the ItemDecoration
-    int spacing = getResources().getDimensionPixelSize(R.dimen.item_spacing1);
-    int borderSize = getResources().getDimensionPixelSize(R.dimen.item_border_size1);
-    int borderColor = ContextCompat.getColor(this, R.color.item_border_color);
-    newImageData.addItemDecoration(new GridSpacingItemDecoration(spacing, borderSize, borderColor));
 
-    GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1);
-    newCommentData.setLayoutManager(gridLayoutManager);
-
-
-    int spacing1 = getResources().getDimensionPixelSize(R.dimen.item_spacing);
-    int borderSize1 = getResources().getDimensionPixelSize(R.dimen.item_border_size);
-    int borderColor1 = ContextCompat.getColor(this, R.color.item_border_color);
-    newCommentData.addItemDecoration(new GridSpacingItemDecoration(spacing1, borderSize1, borderColor1));
 
   }
 

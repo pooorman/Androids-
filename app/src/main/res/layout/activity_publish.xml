@@ -15,9 +15,9 @@
     android:layout_height="wrap_content">
 
     <TextView
-      android:layout_marginLeft="50dp"
+      android:layout_marginLeft="25dp"
       android:layout_width="wrap_content"
-      android:text="新帖子"
+      android:text="新分享"
       android:textSize="40sp"
       android:textStyle="bold"
       android:textColor="@color/black"
@@ -26,7 +26,7 @@
     <Button
       android:id="@+id/create_publish"
       android:layout_width="wrap_content"
-      android:layout_marginLeft="350px"
+      android:layout_marginLeft="300px"
       android:text="发布"
       android:layout_height="match_parent"/>
 
@@ -36,41 +36,59 @@
   <LinearLayout
     android:layout_marginTop="45px"
     android:layout_width="match_parent"
+    android:layout_marginRight="45px"
     android:orientation="horizontal"
+    android:layout_marginBottom="50px"
     android:layout_height="wrap_content">
 
     <ImageView
       android:id="@+id/create_showEdit"
-      android:layout_marginLeft="50dp"
+      android:layout_marginLeft="25dp"
       android:layout_width="250px"
       android:layout_height="250px"/>
 
     <EditText
       android:id="@+id/create_head"
       android:layout_width="wrap_content"
-      android:layout_marginLeft="50px"
-      android:text="添加说明..."
+      android:layout_marginLeft="25px"
+      android:background="@android:color/transparent"
+      android:hint="添加标题..."
       android:layout_height="match_parent"/>
 
 
 
   </LinearLayout>
 
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginBottom="25px"
+    android:background="#F0F0F0" />
+
   <EditText
     android:id="@+id/create_content"
     android:layout_width="match_parent"
-    android:text="请输入正文..."
-    android:layout_marginLeft="125px"
-    android:layout_height="300px"/>
+    android:hint="请输入内容..."
+    android:layout_marginLeft="100px"
+    android:layout_marginRight="100px"
+    android:layout_marginBottom="25px"
+    android:background="@android:color/transparent"
+    android:layout_height="150px"/>
 
-  <TextView
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginBottom="25px"
+    android:background="#F0F0F0" />
+
+
+  <CheckBox
     android:id="@+id/create_save"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textSize="30sp"
-    android:textColor="@color/black"
+    android:textSize="18sp"
     android:layout_marginLeft="100px"
-    android:textStyle="bold"
     android:text="保存为草稿"/>
+
 
 </LinearLayout>

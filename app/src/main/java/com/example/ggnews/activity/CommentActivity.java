@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.ggnews.response.BaseResponse;
 import com.example.ggnews.javabean.Comment;
@@ -43,15 +44,22 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class CommentActivity extends AppCompatActivity {
+public class CommentActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
   private ListView lvNewsList;
   private List<Comment> newsData;
   private CommentAdapter adapter;
+  //定义变量
+  private SwipeRefreshLayout mSwipeLayout;
 
   private TextView coSum;
 
 
+  @Override
+  public void onRefresh() {
+    initData();
+    mSwipeLayout.setRefreshing(false);
+  }
   private okhttp3.Callback callback = new okhttp3.Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
@@ -154,6 +162,13 @@ public class CommentActivity extends AppCompatActivity {
     }).start();
   }
   private void initView() {
+    //下拉刷新
+    mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
+    mSwipeLayout.setOnRefreshListener(this);
+//设置加载动画背景颜色
+    mSwipeLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(android.R.color.background_light));
+//设置进度动画的颜色
+    mSwipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
     lvNewsList = findViewById(R.id.co_list);
     Button viewById = findViewById(R.id.co_publish);
     EditText editText = findViewById(R.id.co_edit);
@@ -214,6 +229,7 @@ public class CommentActivity extends AppCompatActivity {
                       @Override
                       public void run() {
                         //1.构造一个自己加 2.重新请求
+                        initData();
                         new AlertDialog.Builder(CommentActivity.this)
                           .setMessage("添加成功")
                           .show();

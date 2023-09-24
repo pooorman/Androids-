@@ -1,0 +1,19 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <ImageView
+    android:id="@+id/zoom_image1"
+    android:layout_width="800px"
+    android:layout_marginLeft="150px"
+    android:layout_marginTop="150px"
+    android:layout_height="1600px"
+    android:scaleType="centerInside" />
+
+  <View
+    android:id="@+id/background1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent" />
+
+</RelativeLayout>

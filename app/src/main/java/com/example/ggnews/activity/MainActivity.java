@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,9 +35,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
     private ListView lvNewsList;
     private List<Records> newsData;
+  //定义变量
+    private SwipeRefreshLayout mSwipeLayout;
 
     private RecordsAdapter adapter;
 
@@ -48,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
     private int[] mCols = new int[]{Constants.NEWS_COL5,
             Constants.NEWS_COL7, Constants.NEWS_COL8,
             Constants.NEWS_COL10, Constants.NEWS_COL11};
+
+  @Override
+  public void onRefresh() {
+    initData();
+    mSwipeLayout.setRefreshing(false);
+  }
     private okhttp3.Callback callback = new okhttp3.Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
@@ -64,11 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Gson gson = new Gson();
-//                        Type jsonType =
-//                                new TypeToken<BaseResponse<List<News>>>() {}.getType();
-//                        BaseResponse<List<News>> newsListResponse =
-//                                gson.fromJson(body, jsonType);
+                      Gson gson = new Gson();
                       Type jsonType =
                         new TypeToken<NewBaseResponse<List<Records>>>() {}.getType();
                       NewBaseResponse<List<Records>> newsListResponse =
@@ -97,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         initData();
 
     }
+
     private void initData() {
         newsData = new ArrayList<>();
         adapter = new RecordsAdapter(MainActivity.this,
@@ -146,23 +152,33 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
     private void initView() {
+      //下拉刷新
+      mSwipeLayout = (SwipeRefreshLayout)  findViewById(R.id.id_swipe_ly);
+      mSwipeLayout.setOnRefreshListener(this);
+//设置加载动画背景颜色
+      mSwipeLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(android.R.color.background_light));
+//设置进度动画的颜色
+      mSwipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
       lvNewsList = findViewById(R.id.lv_news_list);
       BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
       bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-          if (item.getItemId() == R.id.bottom1) {
-
-
-
-            return true;
-          } else if (item.getItemId() == R.id.bottom2) {
+          if (item.getItemId() == R.id.bottom2) {
             Intent intent = new Intent(MainActivity.this, CreateActivity.class);
             //Intent存登录内容
             LoginResponse loginData = (LoginResponse) getIntent().getSerializableExtra("LoginData");
+            intent.putExtra("LoginData", loginData);
             intent.putExtra("id", loginData.getId());
             startActivity(intent);
             // 新增activity
+            return true;
+
+          } else if (item.getItemId() == R.id.bottom1) {
+            initView();
+
+
+
             return true;
           } else if (item.getItemId() == R.id.bottom3) {
             // 主页activity

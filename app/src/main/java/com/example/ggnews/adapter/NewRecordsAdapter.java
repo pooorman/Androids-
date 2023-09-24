@@ -52,7 +52,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RecordsAdapter extends ArrayAdapter<Records> {
+public class NewRecordsAdapter extends ArrayAdapter<Records> {
 
   private int page = 1;
   private String userId;
@@ -68,7 +68,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
 
 
 
-  private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+  static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
   private int resourceId;
 
 
@@ -95,8 +95,8 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
 
 
 
-  public RecordsAdapter(Context context,
-                     int resourceId, List<Records> data) {
+  public NewRecordsAdapter(Context context,
+                        int resourceId, List<Records> data) {
     super(context, resourceId, data);
     this.mContext = context;
     this.mNewsData = data;
@@ -141,6 +141,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
     }
   }
 
+
   public void loadMoreData() {
     //加载新的数据
     new Thread(new Runnable() {
@@ -159,7 +160,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
             String urlParams = requestObj.toString();
 
             Request request = new Request.Builder()
-              .url(Constants.SERVER_URL2+"/share"+ urlParams)
+              .url(Constants.SERVER_URL2+"/focus"+ urlParams)
               .addHeader("appId","37baffe1646a4411a338eb820a131176")
               .addHeader("appSecret","37609f4e6965cf9384d88bfd237a20b5aa666")
               .get().build();
@@ -178,11 +179,11 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
                   if (response.isSuccessful()) {
                     final String body = response.body().string();
 
-                        Gson gson = new Gson();
-                        Type jsonType =
-                          new TypeToken<NewBaseResponse<List<Records>>>() {}.getType();
-                        NewBaseResponse<List<Records>> newsListResponse =
-                          gson.fromJson(body, jsonType);
+                    Gson gson = new Gson();
+                    Type jsonType =
+                      new TypeToken<NewBaseResponse<List<Records>>>() {}.getType();
+                    NewBaseResponse<List<Records>> newsListResponse =
+                      gson.fromJson(body, jsonType);
                     mNewsData.addAll(newsListResponse.getData().getRecords());
 
                     // 通知适配器数据已更新
@@ -398,6 +399,8 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
                 records.setCollectId(newsListResponse.getData().getCollectId());
                 records.setLikeNum(newsListResponse.getData().getLikeNum());
                 records.setCollectNum(newsListResponse.getData().getCollectNum());
+//                vh.tvLikesCount.setText(records.getLikeNum());
+//                vh.tvLikesCount.setText(records.getCollectNum());
                 // 通知适配器数据已更新
                 mHandler.post(new Runnable() {
                   @Override
@@ -567,7 +570,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
   private class EndlessScrollListener implements AbsListView.OnScrollListener {
     private int visibleThreshold = 5;
     private int currentPage = 0;
-    private int previousTotalItemCount = 0;
+    private int previousTotalItemCount = 5;
     private boolean loading = true;
 
     @Override
@@ -600,59 +603,59 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
   }
 
   public void updateHeadImage(ImageView headImage,String detailName){
-        new Thread(new Runnable() {
-          @Override
-          public void run() {
-            //请求路径
-            Request request = new Request.Builder()
-              .addHeader("appId", "37baffe1646a4411a338eb820a131176")
-              .addHeader("appSecret", "37609f4e6965cf9384d88bfd237a20b5aa666")
-              .url(Constants.SERVER_URL2 + "user/getUserByName?username=" + detailName)
-              .get().build();
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        //请求路径
+        Request request = new Request.Builder()
+          .addHeader("appId", "37baffe1646a4411a338eb820a131176")
+          .addHeader("appSecret", "37609f4e6965cf9384d88bfd237a20b5aa666")
+          .url(Constants.SERVER_URL2 + "user/getUserByName?username=" + detailName)
+          .get().build();
 
-            try {
-              OkHttpClient client = new OkHttpClient();
-              client.newCall(request).enqueue(new okhttp3.Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                  Log.e(TAG, "Failed to connect server!");
-                  e.printStackTrace();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response)
-                  throws IOException {
-                  //接口是看内部的code,解析他的code
-                  final String body = response.body().string();
-                  Gson gson = new Gson();
-                  Type jsonType =
-                    new TypeToken<BaseResponse<LoginResponse>>() {}.getType();
-                  BaseResponse<LoginResponse> Response =
-                    gson.fromJson(body, jsonType);
-
-                  if (Response.getCode()==200) {
-                    String avatar1 = Response.getData().getAvatar();
-                    String avatar = avatar1==null?"https://guet-lab.oss-cn-hangzhou.aliyuncs.com/api/2023/08/30/ee2927bf-6b67-4040-957c-b26c5a5343ab.jpg":avatar1;
-                    mHandler.post(new Runnable() {
-                      @Override
-                      public void run() {
-                        Glide.with(mContext).load(avatar)
-                          .into(headImage);
-                      }
-                    });
-
-                  } else {
-
-
-                  }
-                }
-              });
-            } catch (NetworkOnMainThreadException ex) {
-//            主线程网络错误
-              ex.printStackTrace();
+        try {
+          OkHttpClient client = new OkHttpClient();
+          client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+              Log.e(TAG, "Failed to connect server!");
+              e.printStackTrace();
             }
-          }
-        }).start();
+
+            @Override
+            public void onResponse(Call call, Response response)
+              throws IOException {
+              //接口是看内部的code,解析他的code
+              final String body = response.body().string();
+              Gson gson = new Gson();
+              Type jsonType =
+                new TypeToken<BaseResponse<LoginResponse>>() {}.getType();
+              BaseResponse<LoginResponse> Response =
+                gson.fromJson(body, jsonType);
+
+              if (Response.getCode()==200) {
+                String avatar1 = Response.getData().getAvatar();
+                String avatar = avatar1==null?"https://guet-lab.oss-cn-hangzhou.aliyuncs.com/api/2023/08/30/ee2927bf-6b67-4040-957c-b26c5a5343ab.jpg":avatar1;
+                mHandler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                    Glide.with(mContext).load(avatar)
+                      .into(headImage);
+                  }
+                });
+
+              } else {
+
+
+              }
+            }
+          });
+        } catch (NetworkOnMainThreadException ex) {
+//            主线程网络错误
+          ex.printStackTrace();
+        }
+      }
+    }).start();
 
   }
 
@@ -668,14 +671,14 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
     listView.setOnScrollListener(new EndlessScrollListener());
 
 
-    final RecordsAdapter.ViewHolder vh;
+    final NewRecordsAdapter.ViewHolder vh;
 
 
     if (convertView == null) {
       view = LayoutInflater.from(getContext())
         .inflate(resourceId, parent, false);
 
-      vh = new RecordsAdapter.ViewHolder();
+      vh = new NewRecordsAdapter.ViewHolder();
       vh.tvTitle  = view.findViewById(R.id.tvTitle);
       vh.tvHeadImage = view.findViewById(R.id.tvHeadImage);
       vh.tvUsername = view.findViewById(R.id.tvUsername);
@@ -695,7 +698,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
       view.setTag(vh);
     } else {
       view = convertView;
-      vh = (RecordsAdapter.ViewHolder) view.getTag();
+      vh = (NewRecordsAdapter.ViewHolder) view.getTag();
     }
 
 
@@ -704,7 +707,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
 
     updateHeadImage(vh.tvHeadImage,records.getUsername());
 
-  //初始化recycleView的数据
+    //初始化recycleView的数据
     int spacing = mContext.getResources().getDimensionPixelSize(R.dimen.item_spacing);
     int borderSize = mContext.getResources().getDimensionPixelSize(R.dimen.item_border_size);
     int borderColor = ContextCompat.getColor(mContext, R.color.item_border_color);
@@ -738,15 +741,10 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
       @Override
       public void onClick(View v) {
         //点击发送关注的请求
-        if (!records.isHasFocus()) {
-          // 发送第一种请求
-          sendFirstRequest("focus",records.getpUserId(),vh);
-        } else {
-          // 发送第二种请求
           sendFirstRequest("focus/cancel",records.getpUserId(),vh);
-        }
-        // 切换请求类型
-        records.setHasFocus(!records.isHasFocus());
+//          适配器移除数据
+        mNewsData.remove(position);
+        notifyDataSetChanged();
       }
     });
 
@@ -781,7 +779,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
           sendUnLikeRequest(position,vh);
         }
         //相反
-          records.setHasLike(!records.isHasLike());
+        records.setHasLike(!records.isHasLike());
       }
     });
 
@@ -809,22 +807,17 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
     }
 
     if(records.isHasCollect()){
-        vh.btnCollection.setImageResource(R.drawable.baseline_yellow_star_24);
+      vh.btnCollection.setImageResource(R.drawable.baseline_yellow_star_24);
     }
+    //登录即关注
+    vh.tvFollow.setBackgroundTintList(ContextCompat.getColorStateList(mContext, R.color.black));
+    vh.tvFollow.setTextSize(10);
+    vh.tvFollow.setText("已关注");
 
-    if(records.isHasFocus()){
-      vh.tvFollow.setBackgroundTintList(ContextCompat.getColorStateList(mContext, R.color.black));
-      vh.tvFollow.setTextSize(10);
-      vh.tvFollow.setText("已关注");
-    }else {
-      vh.tvFollow.setBackgroundTintList(ContextCompat.getColorStateList(mContext, R.color.purple_700));
-      vh.tvFollow.setTextSize(10);
-      vh.tvFollow.setText("关注");
-    }
     vh.tvTitle.setText(records.getContent());
     vh.tvRealTitle.setText(records.getTitle());
     vh.tvSecondTitle.setText(records.getUsername());
-    vh.tvLikesCount.setText(records.getLikeNum()+"次赞");
+    vh.tvLikesCount.setText(records.getCollectNum()+"次赞");
     vh.tvCollectCount.setText("共"+String.valueOf(records.getCollectNum())+"次收藏");
     vh.tvUsername.setText(records.getUsername());
 
@@ -917,7 +910,7 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
   class ViewHolder {
     ImageView tvHeadImage;
     TextView tvUsername;
-//    关注按钮
+    //    关注按钮
     Button tvFollow;
     ImageView tvImageUrl;
     RecyclerView reImageList;
@@ -937,3 +930,4 @@ public class RecordsAdapter extends ArrayAdapter<Records> {
 
 
 }
+

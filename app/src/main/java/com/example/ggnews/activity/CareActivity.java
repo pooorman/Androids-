@@ -11,9 +11,11 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.ggnews.Constants;
 import com.example.ggnews.R;
+import com.example.ggnews.adapter.NewRecordsAdapter;
 import com.example.ggnews.adapter.RecordsAdapter;
 import com.example.ggnews.javabean.Records;
 import com.example.ggnews.request.RecordsRequest;
@@ -34,14 +36,19 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class CareActivity extends AppCompatActivity {
+public class CareActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
   //数据源不同
   private ListView lvNewsList;
   private List<Records> newsData;
-  private RecordsAdapter adapter;
+  private SwipeRefreshLayout mSwipeLayout;
+  private NewRecordsAdapter adapter;
 
 
-
+  @Override
+  public void onRefresh() {
+    initData();
+    mSwipeLayout.setRefreshing(false);
+  }
   private okhttp3.Callback callback = new okhttp3.Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
@@ -89,7 +96,7 @@ public class CareActivity extends AppCompatActivity {
   }
   private void initData() {
     newsData = new ArrayList<>();
-    adapter = new RecordsAdapter(CareActivity.this,
+    adapter = new NewRecordsAdapter(CareActivity.this,
       R.layout.record_item, newsData);
 
     //保存userId
@@ -135,8 +142,15 @@ public class CareActivity extends AppCompatActivity {
     }).start();
   }
   private void initView() {
+    mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
+    mSwipeLayout.setOnRefreshListener(this);
+//设置加载动画背景颜色
+    mSwipeLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(android.R.color.background_light));
+//设置进度动画的颜色
+    mSwipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
     lvNewsList = findViewById(R.id.lv_news_list);
     BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+    bottomNavigationView.setSelectedItemId(R.id.bottom4);
     bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
       //导航栏增加
       @Override
@@ -157,6 +171,7 @@ public class CareActivity extends AppCompatActivity {
           //Intent存登录内容
           LoginResponse loginData = (LoginResponse) getIntent().getSerializableExtra("LoginData");
           intent.putExtra("id", loginData.getId());
+          intent.putExtra("LoginData", loginData);
           startActivity(intent);
           // 新增activity
           return true;
@@ -173,6 +188,7 @@ public class CareActivity extends AppCompatActivity {
           return true;
         }else if(item.getItemId() == R.id.bottom4){
           //自己
+          return true;
         }
         return false;
       }
